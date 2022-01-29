@@ -105,10 +105,6 @@ button {
     grid-template-columns: repeat(3, 1fr);
 }
 
-.numbers:nth-child(10) {
-    grid-column: 1 / span 2;
-}
-
 .operators {
     grid-row: 1 / span 5;
     display: grid;
