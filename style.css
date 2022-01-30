@@ -34,15 +34,23 @@ body {
 .output {
     background-color: #1b2d38;
     border-radius: 24px 24px 0 0;
-    direction: rtl;
     position: relative;
 }
 
 .output-num {
+    direction: rtl;
     font-size: 32px;
     position: absolute;
     bottom: 10px;
     right: 20px;
+}
+
+.output-prev {
+    color: rgba(255, 255, 255, 0.5);
+    direction: ltr;
+    position: absolute;
+    right: 20px;
+    bottom: 60px;
 }
 
 button {
@@ -74,6 +82,14 @@ button {
 #equals:hover {
     background-color: #af6c19;
     color: #e4e7eb;
+}
+
+#modulo {
+    background-color: #1b2d38;
+}
+
+#modulo:hover {
+    background-color: #080e11;
 }
 
 .number:hover, .misc:hover {
