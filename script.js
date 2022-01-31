@@ -1,9 +1,13 @@
+'use strict';
+
 const numbers = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
+const miscBtns = document.querySelectorAll('.misc');
 const outputNum = document.querySelector('.output-num');
 const outputPrev = document.querySelector('.output-prev');
-const miscBtns = document.querySelectorAll('.misc');
 const equals = document.querySelector('.equals');
+const decimal = document.querySelector('#decimal');
+
 
 const Add = (addend1, addend2) => addend1 + addend2;
 const Subtract = (minuend, subtrahend) => minuend - subtrahend;
@@ -15,24 +19,25 @@ const Modulo = (dividend, divisor) => dividend % divisor;
 let num1, num2, result, operation;
 let num1Inputted = false;
 let num2Inputted = false;
-let initialState = true;
+let hasOperated = false;
 
 numbers.forEach(number => {
     number.addEventListener('click', (e) => PlaceToOutput(e));
 });
 
 operators.forEach(operator => {
+    
     operator.addEventListener('click', (e) => {
-        if (!num1Inputted) {
-            SetFirstNumber(e);
-            num2Inputted = false;
-            equals.disabled = false;
-        }
-        else if (num1Inputted && num2Inputted && initialState) {
+        console.log(num1Inputted, num2Inputted, hasOperated);
+        if (num1Inputted && !num2Inputted && !hasOperated) {
             Operate();
-            outputPrev.textContent = `${result} ${e.target.textContent}`;
-            outputNum.textContent = "";
+            hasOperated = false;
         }
+
+        SetFirstNumber(e);
+        num2Inputted = false;
+        equals.disabled = false;
+        decimal.disabled = false;
     });
 });
 
@@ -52,19 +57,24 @@ miscBtns.forEach(miscBtn => {
 })
 
 equals.addEventListener('click', () => {
-    if (!num1Inputted && initialState) equals.disabled = true;
-    else if (num1Inputted && num2Inputted && !initialState) {
+    console.log(num1Inputted, num2Inputted, hasOperated);
+
+    if (!num1Inputted && !num2Inputted) {
+        equals.disabled = true;
+        hasOperated = false;
+    }
+    else if (num1Inputted && num2Inputted && !hasOperated) {
         equals.disabled = true;
     }
-    else {
-        equals.disabled = false;
+    else if (num1Inputted && !num2Inputted && !hasOperated) {
         Operate();
+        hasOperated = false;
     }
-
-    console.log(num1Inputted, num2Inputted);
 });
 
-
+decimal.addEventListener('click', () => {
+    decimal.disabled = true;
+})
 
 const PlaceToOutput = (event) => outputNum.textContent += event.target.textContent;
 
@@ -88,27 +98,28 @@ const Operate = () => {
     
     switch (operation) {
         case "add":
-            result = Add(num1, num2);
+            result = Number(Add(num1, num2).toFixed(1));
             break;
         case "subtract":
-            result = Subtract(num1, num2);
+            result = Number(Subtract(num1, num2)).toFixed(1);
             break;
         case "multiply":
-            result = Multiply(num1, num2);
-                break;
+            result = Number(Multiply(num1, num2)).toFixed(1);
+            break;
         case "divide":
-            result = Divide(num1, num2);
+            if (num2 !== 0) result = Number(Divide(num1, num2)).toFixed(1);
+            else result = "error";
             break;
         case "modulo":
-            result = Modulo(num1, num2);
+            result = Number(Modulo(num1, num2)).toFixed(1);
             break;
         default:
             outputNum.textContent = 'err';
         }
-        
+    
     console.log(num1, num2);
     outputNum.textContent = result;
-    initialState = false;
+    result = 0;
 }
 
 const ResetCalc = () => {
@@ -116,6 +127,8 @@ const ResetCalc = () => {
     outputPrev.textContent = "";
     num1, num2, result = 0;
     equals.disabled = false;
+    decimal.disabled = false;
+    hasOperated = false;
     num1Inputted = false;
     num2Inputted = false;
     operation = "";
@@ -126,4 +139,3 @@ const Backspace = () => {
     newNum = newNum.slice(0, -1);
     outputNum.textContent = newNum;
 }
-
